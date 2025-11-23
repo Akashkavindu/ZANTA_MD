@@ -15,9 +15,7 @@ const path = require('path');
 
 const config = require('./config');
 const { sms } = require('./lib/msg');
-const {
-  getGroupAdmins, jidNormalizedUser
-} = require('./lib/functions');
+const { getGroupAdmins, jidNormalizedUser } = require('./lib/functions');
 const { commands, replyHandlers } = require('./command');
 
 const app = express();
