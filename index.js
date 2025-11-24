@@ -88,10 +88,10 @@ async function connectToWA() {
             console.log('✅ ZANTA-MD connected to WhatsApp');
 
             const up = `> ZANTA-MD connected ✅\n\nPREFIX: ${prefix}`;
-            await zanta.sendMessage(ownerNumber[0] + "@s.whatsapp.net", {
-                image: { url: `https://github.com/Akashkavindu/ZANTA_MD/blob/main/images/ChatGPT%20Image%20Nov%2021,%202025,%2001_21_32%20AM.png?raw=true` },
-                caption: up
-            });
+            await zanta.sendMessage(ownerNumber[0] + "@s.whatsapp.net", {
+                image: { url: `https://github.com/Akashkavindu/ZANTA_MD/blob/main/images/ChatGPT%20Image%20Nov%21,%202025,%2001_21_32%20AM.png?raw=true` },
+                caption: up
+            });
 
             fs.readdirSync("./plugins/").forEach((plugin) => {
                 if (path.extname(plugin).toLowerCase() === ".js") {
@@ -143,11 +143,7 @@ async function connectToWA() {
 
         const reply = (text) => zanta.sendMessage(from, { text }, { quoted: mek });
 
-        // 🚨 REMOVED: Reply Menu Check Block 🚨
-
         if (isCmd) {
-            // Only runs if it is a prefixed command
-
             const cmd = commands.find((c) => c.pattern === commandName || (c.alias && c.alias.includes(commandName)));
             if (cmd) {
                 if (cmd.react) zanta.sendMessage(from, { react: { text: cmd.react, key: mek.key } });
