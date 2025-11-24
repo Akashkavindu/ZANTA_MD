@@ -45,17 +45,19 @@ cmd(
             menuText += "╰━─━─━─━─━─━─━─━─━╯\n\n";
 
             // 3. Category සහ Commands එකතු කිරීම
-            for (const [cat, cmds] of Object.entries(categories)) {
-                
-                // Category Header එක සකස් කිරීම
-                const formattedCat = cat.charAt(0).toUpperCase() + cat.slice(1);
-                menuText += `\n+📂 ${formattedCat} Menu *----->*\n`;
-                
-                // Commands එකතු කිරීම
-                cmds.forEach(c => {
-                    menuText += `*◻ .${c.pattern}* : ${c.desc}\n`;
-                });
-            }
+            // 3. Category සහ Commands එකතු කිරීම (මෙම කොටස වෙනස් කළ පසු)
+for (const [cat, cmds] of Object.entries(categories)) {
+    
+    const formattedCat = cat.charAt(0).toUpperCase() + cat.slice(1);
+    
+    // 1. Category Header (වෙන්කරනය)
+    menuText += `\n\n*══════ [ 📚 ${formattedCat.toUpperCase()} ] ══════*\n\n`;
+    
+    // 2. Commands එකතු කිරීම (නව Box Style එක)
+    cmds.forEach(c => {
+        menuText += `╭──────●●►\n│⛩ Command ☛ .${c.pattern}\n│🏮 Use ☛ ${c.desc}\n╰──────●●►\n`;
+    });
+}
 
             // 4. Footer එක
             menuText += "\n\n➖➖➖➖➖➖➖➖➖➖➖➖➖\n";
@@ -77,6 +79,7 @@ cmd(
         }
     }
 );
+
 
 
 
