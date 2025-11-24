@@ -143,10 +143,7 @@ async function connectToWA() {
 
         const reply = (text) => zanta.sendMessage(from, { text }, { quoted: mek });
 
-        // ╔═════════ ADDED REPLY MENU CHECK ═════════╗
-       // ... (මෙහි ඉහළින්ම from, reply, body යනාදිය define කර තිබිය යුතුයි) ...
-
-        // ╔═════════ ADDED REPLY MENU CHECK ═════════╗
+      // ╔═════════ ADDED REPLY MENU CHECK ═════════╗
         let replyToMenu = false;
         let replyNumber = null;
 
@@ -162,18 +159,33 @@ async function connectToWA() {
                     quotedMessage = quotedMsg.conversation;
                 }
             }
+            
+            // 🚨 DEBUG: 1 - Bot එක Reply කළ Message එකේ Content එක කියවූවාද?
+            console.log("DEBUG 1: Quoted Message Content:", quotedMessage ? quotedMessage.substring(0, 50) + "..." : "EMPTY");
 
-            // 🚨 1. Magic Text Check (සරල කළ අනුවාදය)
-            // (menu.js හි Bold ඉවත් කර ඇති බවට උපකල්පනය කර ඇත)
+            // 🚨 2. Magic Text Check (සරල කළ අනුවාදය)
             if (quotedMessage && quotedMessage.includes("menu option by replying")) {
                 
-                const replyBody = body.trim(); // The content of the user's reply (e.g., '1')
+                // 🚨 DEBUG: 2 - Magic Text Check එක සමත්ද?
+                console.log("DEBUG 2: Magic Text Check PASSED!");
+
+                const replyBody = body.trim(); 
                 
-                // 🚨 2. Reply Number Check (අංක පමණක් තිබේදැයි පරීක්ෂා කිරීම)
+                // 🚨 DEBUG: 3 - පරිශීලකයාගේ Reply එක කුමක්ද?
+                console.log(`DEBUG 3: User Reply (Trimmed): '${replyBody}'`);
+                
+                // 🚨 4. Reply Number Check (අංක පමණක් තිබේදැයි පරීක්ෂා කිරීම)
                 if (/^\d+$/.test(replyBody)) {
                     replyToMenu = true;
                     replyNumber = replyBody;
+                    
+                    // 🚨 DEBUG: 4 - අවසාන Check එක සමත්ද?
+                    console.log("DEBUG 4: Final Digit Check PASSED! Running Menu.");
+                } else {
+                    console.log("DEBUG 4: Final Digit Check FAILED. (Not a pure digit reply)");
                 }
+            } else {
+                console.log("DEBUG 2: Magic Text Check FAILED. (Not the Menu message)");
             }
         }
         // ╚═════════════════════════════════════════╝
