@@ -45,7 +45,7 @@
     "tmp": "^0.2.5",
     "util": "^0.12.5",
     "vm": "^0.1.0",
-    
-    "tiktok-scraper-ts": "^1.4.3"
+
+    "tiktok-downloader": "github:synctv-org/tiktok-downloader"
   }
 }
