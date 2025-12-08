@@ -13,7 +13,7 @@
     "@distube/ytdl-core": "^4.16.12",
     "@faouzkk/tiktok-dl": "^1.0.1",
     "@vreden/youtube_scraper": "^1.2.8",
-    "@whiskeysockets/baileys": "^7.0.0-rc.9",
+    "@whiskeysockets/baileys": "^6.7.2",
     "@xaviabot/fb-downloader": "^1.0.14",
     "api-dylux": "^1.8.5",
     "axios": "^1.6.8",
