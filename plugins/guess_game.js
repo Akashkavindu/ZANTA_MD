@@ -8,7 +8,7 @@ cmd(
     {
         pattern: "guess",
         react: "🎲",
-        desc: "Play a number guessing game (1-100).",
+        desc: "Number guessing game (1-100)",
         category: "fun",
         filename: __filename,
     },
