@@ -16,22 +16,20 @@ if (!m.quoted) {
 return reply("කරුණාකර *View Once Image* හෝ *Video* පණිවිඩයක් Reply කරන්න.");
 }
 
-const quotedMsg = m.quoted.msg;
+// 2. View Once Message එකක්දැයි පරීක්ෂා කිරීම (msg.js වෙතින් ලැබෙන නව Flag එක භාවිතා කරයි)
+if (!m.quoted.isViewOnce) {
+// Reply කළ පණිවිඩයේ වර්ගය පෙන්වමු
+return reply(`මෙය *View Once* පණිවිඩයක් නොවේ. (Type: ${m.quoted.type})`);
+}
+
+const quotedMsg = m.quoted.msg; // m.quoted.msg යනු දැන් Inner Image/Video Object එකයි
 
 if (!quotedMsg) {
 return reply(`❌ Reply කළ පණිවිඩයේ දත්ත සොයා ගැනීමට නොහැක. එය media පණිවිඩයක් දැයි පරීක්ෂා කරන්න.`);
 }
 
-// 2. View Once Message එකක්දැයි පරීක්ෂා කිරීම
-const isViewOnce = quotedMsg.viewOnce === true;
-
-if (!isViewOnce) {
-// Reply කළ පණිවිඩයේ වර්ගය පෙන්වමු
-return reply(`මෙය *View Once* පණිවිඩයක් නොවේ. (Actual Type: ${m.quoted.type})`);
-}
-
 // 3. Image හෝ Video එකක්දැයි පරීක්ෂා කිරීම
-const actualMessageType = m.quoted.type;
+const actualMessageType = m.quoted.msg.type; // Inner Message Type එක පරීක්ෂා කරයි
 
 if (actualMessageType !== 'imageMessage' && actualMessageType !== 'videoMessage') {
 return reply("කරුණාකර *View Once Image* හෝ *Video* එකක් Reply කරන්න.");
