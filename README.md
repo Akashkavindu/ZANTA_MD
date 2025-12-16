@@ -40,6 +40,12 @@ Run this sessionrepo in replit and get session id
     <img src="https://img.shields.io/badge/Visit_Developer's_GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="Developer GitHub">
   </a>
 </div>
+### OR
+<div align="center">
+  <a href="https://web-pair-eqq2.onrender.com" target="_blank">
+    <img src="https://img.shields.io/badge/Generate_Session_Key_Here-0077B6?style=for-the-badge&logo=render&logoColor=white" alt="Generate Session Key">
+  </a>
+</div>
 
 ---
 
