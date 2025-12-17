@@ -1,93 +1,61 @@
 const { cmd } = require("../command");
 const os = require('os');
-const { runtime, sleep } = require('../lib/functions'); 
-const config = require("../config"); // BOT_NAME ලබා ගැනීමට
+const { runtime } = require('../lib/functions');
 
-// Image URL එක මෙහි ඇත
 const STATUS_IMAGE_URL = "https://github.com/Akashkavindu/ZANTA_MD/blob/main/images/alive-new.jpg?raw=true";
 
-// Helper function to format bytes to a readable string
 function bytesToSize(bytes) {
-const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-if (bytes === 0) return '0 Byte';
-const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    if (bytes === 0) return '0 Byte';
+    const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
 }
 
-cmd(
-{
-pattern: "ping",
-react: "⚙️",
-desc: "Display bot information.",
-category: "main", 
-filename: __filename,
+cmd({
+    pattern: "ping",
+    alias: ["status", "info"],
+    react: "⚙️",
+    desc: "Check bot speed and system status.",
+    category: "main",
+    filename: __filename,
 },
-async (
-zanta,
-mek,
-m,
-{
-from,
-reply,
-}
-) => {
-try {
-// 1. Response Time Calculation - Start Time
-const startTime = Date.now();
-// පළමු reply එක යවයි (මෙය ක්‍රියාත්මක වන්නේ නම්, දෙවන පණිවිඩයද ක්‍රියාත්මක විය යුතුය)
-await reply("*⚙️ Bot තොරතුරු එකතු කරමින්...*"); 
+async (zanta, mek, m, { from, reply }) => {
+    try {
+        const startTime = Date.now();
 
-// 2. System and Bot Data Collection
-const memoryUsage = process.memoryUsage(); 
-const totalMemory = os.totalmem();
-const freeMemory = os.freemem();
+        // පණිවිඩය යවා එහි key එක ලබා ගනී (පසුව මැකීමට)
+        const loadingMsg = await reply("*⚙️ Bot තොරතුරු එකතු කරමින්...*");
 
-let pm2_details = "";
+        const botName = global.CURRENT_BOT_SETTINGS.botName;
+        const memoryUsage = process.memoryUsage();
+        const latency = Date.now() - startTime;
 
-if (process.env.NODE_APP_INSTANCE !== undefined) {
-pm2_details = `
-*┃ ⏳ Uptime:* ${runtime(process.uptime())}
-*┃ ⚙️ Process Mode:* PM2 (Managed)
-`;
-} else {
-pm2_details = `
-*┃ ⏳ Uptime:* ${runtime(process.uptime())}
-*┃ ⚙️ Process Mode:* Standard
-`;
-}
-
-// 3. Latency calculation - End Time
-const endTime = Date.now();
-const latency = endTime - startTime;
-
-            // 4. Bot Name, fallback to ZANTA-MD
-            const botName = config.BOT_NAME || "ZANTA-MD"; 
-
-// 5. Constructing the formatted Reply Message (Caption)
-const statusMessage = `
+        const statusMessage = `
 *╭━━━*「 *${botName} STATUS* 」*━━━╮*
-*┃ ⏱️ Response Time:* ${latency} ms
-${pm2_details}
+*┃ ⏱️ Response:* ${latency} ms
+*┃ ⏳ Uptime:* ${runtime(process.uptime())}
 *┃ 🌐 Platform:* ${os.platform()}
-*┃ 💻 Node Version:* ${process.version}
+*┃ 💻 Node:* ${process.version}
 *╰━━━━━━━━━━━━━━━━━━╯*
 
 *╭━━━*「 *System Resources* 」*━━━╮*
 *┃ 🧠 Process RAM:* ${bytesToSize(memoryUsage.rss)}
-*┃ 📊 Total System RAM:* ${bytesToSize(totalMemory)}
-*┃ 📊 Free System RAM:* ${bytesToSize(freeMemory)}
+*┃ 📊 Total RAM:* ${bytesToSize(os.totalmem())}
+*┃ 📊 Free RAM:* ${bytesToSize(os.freemem())}
 *╰━━━━━━━━━━━━━━━━━━╯*
 `;
 
-// 6. Send the final formatted message WITH IMAGE (Image එක යැවීම)
-await zanta.sendMessage(from, {
-image: { url: STATUS_IMAGE_URL }, // 🖼️ Image URL එක මෙතනින් යවනවා
-caption: statusMessage // 📝 Message එක Caption එක ලෙස යවනවා
-}, { quoted: mek });
+        // අවසාන පණිවිඩය රූපය සමඟ යැවීම
+        await zanta.sendMessage(from, {
+            image: { url: STATUS_IMAGE_URL },
+            caption: statusMessage.trim()
+        }, { quoted: mek });
 
-} catch (e) {
-console.error("[STATUS ERROR]", e);
-reply(`*🚨 Error:* Bot තොරතුරු ලබා ගැනීමට අසමත් විය. දෝෂය: ${e.message}`);
-}
-}
-);
+        // මුලින් යැවූ "තොරතුරු එකතු කරමින්" පණිවිඩය මැකීම
+        await zanta.sendMessage(from, { delete: loadingMsg.key });
+
+    } catch (e) {
+        console.error("[PING ERROR]", e);
+        reply(`*🚨 Error:* ${e.message}`);
+    }
+});
