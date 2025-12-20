@@ -16,7 +16,7 @@ cmd({
 
         const search = await yts(q);
         const data = search.videos[0];
-        if (!data) return await zanta.sendMessage(from, { text: "❌ *සින්දුව සොයාගත නොහැකි විය.*", edit: loading.key });
+        if (!data) return await zanta.sendMessage(from, { text: "❌ *සින්දුව සොයාගත නොහැකි විය._Try .ytmp3 command_*", edit: loading.key });
 
         const botName = global.CURRENT_BOT_SETTINGS.botName;
 
