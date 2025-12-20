@@ -1,6 +1,7 @@
 const { cmd } = require("../command");
 const fs = require('fs');
 const path = require('path');
+const figlet = require('figlet');
 const ffmpegPath = require('ffmpeg-static');
 const ffmpeg = require('fluent-ffmpeg');
 const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
@@ -58,10 +59,9 @@ const getMedia = (quoted) => {
 
 // 1. 🖼️ IMAGE/VIDEO TO STICKER (.s)
 cmd({
-    pattern: "sticker",
-    alias: ["s", "st"],
+    pattern: "s",
+    alias: ["sticker", "st"],
     react: "🌟",
-    desc: "Convert image to sticker.",
     category: "convert",
     filename: __filename,
 }, async (zanta, mek, m, { from, reply, quoted }) => {
@@ -90,7 +90,6 @@ cmd({
 cmd({
     pattern: "toimg",
     react: "🖼️",
-    desc: "Convert sticker to image.",
     category: "convert",
     filename: __filename,
 }, async (zanta, mek, m, { from, reply, quoted }) => {
@@ -118,7 +117,6 @@ cmd({
     pattern: "tomp3",
     alias: ["toaudio"],
     react: "🎶",
-    desc: "Convert video to audio.",
     category: "convert",
     filename: __filename,
 }, async (zanta, mek, m, { from, reply, quoted }) => {
@@ -147,7 +145,6 @@ cmd({
     pattern: "tourl",
     alias: ["url"],
     react: "🔗",
-    desc: "Convert image to url.",
     category: "convert",
     filename: __filename,
 }, async (zanta, mek, m, { from, reply, quoted }) => {
@@ -170,7 +167,6 @@ cmd({
 cmd({
     pattern: "toqr",
     react: "🏁",
-    desc: "Convert link to qr code.",
     category: "convert",
     filename: __filename,
 }, async (zanta, mek, m, { from, reply, args }) => {
@@ -187,8 +183,7 @@ cmd({
     pattern: "removebg",
     alias: ["rmbg"],
     react: "✂️",
-    desc: "Remove image background.",
-    category: "media",
+    category: "convert",
     filename: __filename,
 }, async (zanta, mek, m, { from, reply, quoted }) => {
     try {
@@ -228,7 +223,6 @@ cmd({
     pattern: "genimg",
     alias: ["aiimg", "draw"],
     react: "🎨",
-    desc: "Create image using AI.",
     category: "media",
     filename: __filename,
 }, async (zanta, mek, m, { from, reply, args }) => {
@@ -251,3 +245,98 @@ cmd({
 });
 
 module.exports = {};
+
+cmd({
+    pattern: "fancy",
+    alias: ["font", "style", "text"],
+    react: "✍️",
+    desc: "Convert text into 15+ stylish fonts.",
+    category: "convert",
+    filename: __filename,
+}, async (zanta, mek, m, { from, reply, q }) => {
+    try {
+        if (!q) return reply("✍️ *කරුණාකර ඔබට අවශ්‍ය වචනය ලබා දෙන්න.*");
+
+        const normalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        const styles = {
+            "𝖲𝖺𝗇𝗌": "𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹𝖺 digital𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫",
+            "𝑩𝒐𝒍𝒅 𝑰𝒕𝒂𝒍𝒊𝒄": "𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗",
+            "𝙼𝚘𝚗𝚘𝚜𝚙𝚊𝚌𝚎": "𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿",
+            "𝔊𝔬𝔱𝔥𝔦𝔠": "𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜ℨ𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡",
+            "ℂ𝕦𝕣𝕤𝕚𝕧𝕖": "𝒜𝐵𝒞𝒟𝐸𝐹𝒢𝐻𝐼𝒥𝒦𝐿𝑀𝒩𝒪𝒫𝒬𝑅𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵𝒶𝒷𝒸𝒹𝑒𝒻𝑔𝒽𝒾𝒿𝓀𝓁𝓂𝓃𝑜𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗",
+            "🅂🅀🅄🄰🅁🄴": "🄰🄱🄲🄳🄴🄵🄶🄸🄹🄺🄻🄼🄽🄾🄿🅀🅁🅂🅃🅄🅅content🅇🅈🅉🄰🄱🄲🄳🄴🄵🄶🄸🄹🄺🄻🄼🄽🄾🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉0123456789",
+            "B🅤🅑🅑🅛🅗🅢": "ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ⓪①②③④⑤⑥⑦⑧⑨",
+            "C̳o̳m̳b̳i̳n̳i̳n̳g̳": "A̳B̳C̳D̳E̳F̳G̳H̳I̳J̳K̳L̳M̳N̳O̳P̳Q̳R̳S̳T̳U̳V̳W̳X̳Y̳Z̳a̳b̳c̳d̳e̳f̳g̳h̳i̳j̳k̳l̳m̳n̳o̳p̳q̳r̳s̳t̳u̳v̳w̳x̳y̳z̳0̳1̳2̳3̳4̳5̳6̳7̳8̳9̳",
+            "S̶t̶r̶i̶k̶e̶": "A̶B̶C̶D̶E̶F̶G̶H̶I̶J̶K̶L̶M̶N̶O̶P̶Q̶R̶S̶T̶U̶V̶W̶X̶Y̶Z̶a̶b̶c̶d̶e̶f̶g̶h̶i̶j̶k̶l̶m̶n̶o̶p̶q̶r̶s̶t̶u̶v̶w̶x̶y̶z̶0̶1̶2̶3̶4̶5̶6̶7̶8̶9̶",
+            "Gᵣₑₑₖ ₛₜyₗₑ": "αв¢∂єƒgнιנкℓмησρףяѕтυνωχуչαв¢∂єƒgнιנкℓмησρףяѕтυνωχуչ0123456789",
+            "Fৡৢ͜͡ancy": "Aৡৢ͜͡Bৡৢ͜͡Cৡৢ͜͡Dৡৢ͜͡Eৡৢ͜͡Fৡৢ͜͡Gৡৢ͜͡Hৡৢ͜͡Iৡৢ͜͡Jৡৢ͜͡Kৡৢ͜͡Lৡৢ͜͡Mৡৢ͜͡Nৡৢ͜͡Oৡৢ͜͡Pৡৢ͜͡Qৡৢ͜͡Rৡৢ͜͡Sৡৢ͜͡Tৡৢ͜͡Uৡৢ͜͡Vৡৢ͜͡Wৡৢ͜͡Xৡৢ͜͡Yৡৢ͜͡Zৡৢ͜͡",
+            "Uᴩꜱɪᴅᴇ Dᴏᴡɴ": "ⱯᗺϽᗡƎℲƃHIᒋʞꞀWNOԀÒᴚS⟘∩ɅMX⅄Zɐqɔpǝɟƃɥıɾʞꞁɯuodbɹsʇnʌʍxʎz0123456789"
+        };
+
+        let result = `✨ *ZANTA-MD ADVANCED FONTS* ✨\n\n`;
+
+        for (let styleName in styles) {
+            let styledText = "";
+            let styleAlphabet = styles[styleName];
+
+            for (let char of q) {
+                let index = normalChars.indexOf(char);
+                if (index !== -1) {
+                    // ඇතැම් අකුරු යුනිකෝඩ් නිසා දිග වෙනස් විය හැක
+                    // ඒ නිසා අපි සාමාන්‍ය ක්‍රමයට වඩා දියුණු ක්‍රමයක් බලමු
+                    // මෙහිදී බොහොමයක් ස්ටයිල් සඳහා සරල mapping එකක් කරමු
+                    let charLength = Math.floor(styleAlphabet.length / normalChars.length);
+                    styledText += styleAlphabet.substr(index * charLength, charLength).trim();
+                } else {
+                    styledText += char;
+                }
+            }
+            result += `📍 *${styleName}*\n${styledText}\n\n`;
+        }
+
+        result += `> *© ZANTA-MD 2024*`;
+        await reply(result);
+
+    } catch (err) {
+        console.error(err);
+        reply("❌ Fonts generate කිරීමේදී දෝෂයක් සිදු විය.");
+    }
+});
+
+cmd({
+    pattern: "art",
+    alias: ["styletext", "ascii"],
+    react: "🎨",
+    desc: "Convert text into ASCII art symbols (Max 6 letters).",
+    category: "convert",
+    filename: __filename,
+}, async (zanta, mek, m, { from, reply, q }) => {
+    try {
+        if (!q) return reply("🎨 *කරුණාකර වචනයක් ලබා දෙන්න. (උදා: .ascii ZANTA)*");
+
+        // අකුරු 6 සීමාව පරීක්ෂා කිරීම
+        if (q.length > 6) {
+            return reply("⚠️ *වැඩිම වුනොත් අකුරු 6ක් පමණක් ලබා දෙන්න. (නැතිනම් රූපය විකෘති වේ)*");
+        }
+
+        // වචනය අකුරු රූපයක් බවට පත් කිරීම
+        figlet(q, function(err, data) {
+            if (err) {
+                console.log('Something went wrong...');
+                return reply("❌ ASCII රූපය සෑදීමේදී දෝෂයක් විය.");
+            }
+
+            // මැසේජ් එක යැවීමේදී කෝඩ් බ්ලොක් එකක් ඇතුලේ යැවිය යුතුයි
+            const artResult = "```" + data + "```";
+
+            const botName = global.CURRENT_BOT_SETTINGS?.botName || "ZANTA-MD";
+
+            reply(`🎨 *ASCII ART GENERATOR*\n\n${artResult}\n\n> *© ${botName}*`);
+        });
+
+    } catch (err) {
+        console.error(err);
+        reply("❌ දෝෂයක් සිදු විය.");
+    }
+});
