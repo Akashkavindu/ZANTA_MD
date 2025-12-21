@@ -43,6 +43,9 @@ const port = process.env.PORT || 8000;
 const credsPath = path.join(__dirname, "/auth_info_baileys/creds.json");
 const messagesStore = {};
 
+// --- 🗑️ Bad Words List ---
+const customBadWords = ["fuck", "sex", "porn", "හුකන", "පොන්න", "පුක", "බැල්ලි", "කුණුහරුප"];
+
 process.on('uncaughtException', (err) => console.error('⚠️ Exception:', err));
 process.on('unhandledRejection', (reason) => console.error('⚠️ Rejection:', reason));
 
@@ -173,6 +176,20 @@ async function connectToWA() {
         const isBotAdmins = isGroup ? groupAdmins.includes(botNumber2) : false;
         const isAdmins = isGroup ? groupAdmins.includes(sender) : false;
 
+        if (isGroup && global.CURRENT_BOT_SETTINGS.antiBadword === 'true' && !isAdmins && !isOwner) {
+            const badWords = ["fuck", "sex", "porn", "හුකන", "පොන්න", "පුක", "බැල්ලි", "කුණුහරුප", "huththa", "pakaya" , "kariya", "hukanna", "pkya", "wezi", "hutta", "hutt", "pky", "ponnaya", "ponnya", "balla", "love"]; 
+            const hasBadWord = badWords.some(word => body.toLowerCase().includes(word));
+
+            if (hasBadWord) {
+                await zanta.sendMessage(from, { delete: mek.key }); // මැසේජ් එක මකනවා
+                await zanta.sendMessage(from, { 
+                    text: `⚠️ *@${sender.split('@')[0]} ඔබේ පණිවිඩය ඉවත් කරන ලදී!*`,
+                    mentions: [sender]
+                });
+                return; // වැඩිදුර Process කිරීම නවත්වනවා
+            }
+        }
+        
         const reply = (text) => zanta.sendMessage(from, { text }, { quoted: mek });
         const isMenuReply = (m.quoted && lastMenuMessage && lastMenuMessage.get(from) === m.quoted.id);
         const isSettingsReply = (m.quoted && lastSettingsMessage && lastSettingsMessage.get(from) === m.quoted.id);
@@ -182,11 +199,11 @@ async function connectToWA() {
             const input = body.trim().split(" ");
             const num = input[0];
             const value = input.slice(1).join(" ");
-            let dbKeys = ["", "botName", "ownerName", "prefix", "autoRead", "autoTyping", "autoStatusSeen", "alwaysOnline", "readCmd", "autoVoice"];
+            let dbKeys = ["", "botName", "ownerName", "prefix", "autoRead", "autoTyping", "autoStatusSeen", "alwaysOnline", "readCmd", "autoVoice" , "antiBadword"];
             let dbKey = dbKeys[parseInt(num)];
 
             if (dbKey) {
-                let finalValue = (['4', '5', '6', '7', '8', '9'].includes(num)) 
+                let finalValue = (['4', '5', '6', '7', '8', '9', '10'].includes(num)) 
                     ? ((value.toLowerCase() === 'on' || value.toLowerCase() === 'true') ? 'true' : 'false') : value;
                 const success = await updateSetting(dbKey, finalValue);
                 if (success) {
