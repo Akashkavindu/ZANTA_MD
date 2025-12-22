@@ -65,7 +65,7 @@ cmd({
     filename: __filename,
 }, async (zanta, mek, m, { from, reply, q }) => {
     if (!q) return reply("❌ *YouTube ලින්ක් එකක් හෝ නමක් ලබා දෙන්න.*");
-
+    
     try {
         let videoInfo;
         let videoId = getYouTubeID(q);
